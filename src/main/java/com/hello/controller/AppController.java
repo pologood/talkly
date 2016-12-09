@@ -5,7 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * Created by 浦云飞 on 2016/12/9.
+ * Created by lex on 2016/12/9.
  */
 @Controller
 public class AppController {

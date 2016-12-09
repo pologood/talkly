@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Created by 浦云飞 on 2016/12/9.
+ * Created by lex on 2016/12/9.
  */
 @Configuration
 public class ChatServerConfig {
