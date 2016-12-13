@@ -14,6 +14,10 @@
 <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 <script src="http://cdn.jsdelivr.net/fingerprintjs2/1.4.1/fingerprint2.min.js"></script>
 <script>
+    function getURLParameter(name) {
+        return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
+    }
+    document.getElementById("to").value = getURLParameter('to');
     var socket = io.connect('http://localhost:9092');
     var fingerprint;
     new Fingerprint2().get(function (result, components) {
