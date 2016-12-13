@@ -6,27 +6,28 @@ import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.DataListener;
 import com.hello.chat.AbstractListener;
 import com.hello.service.CacheService;
-
-import java.util.UUID;
+import org.springframework.stereotype.Component;
 
 /**
- * Created by lex on 2016/12/9.
+ * Created by lex on 2016/12/13.
  */
-public class MessageListener
+@Component
+public class RegisterListener
         extends AbstractListener
-        implements DataListener<Message> {
+        implements DataListener<Register> {
 
-    public MessageListener(SocketIOServer server, CacheService cache) {
+    public RegisterListener(SocketIOServer server, CacheService cache) {
         super(server, cache);
     }
 
     @Override
     public void onData(
             SocketIOClient client,
-            Message message,
+            Register message,
             AckRequest ackRequest
     ) throws Exception {
-        getServer().getClient(UUID.fromString(message.getTo()))
-                .sendEvent("get_message", message);
+        client.set("agent", message.getUsername());
+        message.setClientId(client.getSessionId().toString());
+        getCache().put(message.getUsername(), message);
     }
 }

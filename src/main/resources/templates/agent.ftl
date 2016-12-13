@@ -17,6 +17,10 @@
         fingerprint = result;
         socket.on('connect', function () {
             console.log('Client has connected to the server!');
+            socket.emit('send_register', {
+                username: '${username}',
+                token: "zzzzz"
+            });
         });
         socket.on('disconnect', function () {
             console.log('The client has disconnected!');

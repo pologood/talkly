@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
  * Created by lex on 2016/12/13.
  */
 @Service
-public class RedisService {
+public class CacheService {
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
@@ -19,9 +19,9 @@ public class RedisService {
         valueops.set(key, value);
     }
 
-    public void get(String key) {
+    public Object get(String key) {
         ValueOperations<String, Object> valueops = redisTemplate.opsForValue();
-        valueops.get(key);
+        return valueops.get(key);
     }
 
     public void remove(String key) {

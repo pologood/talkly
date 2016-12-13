@@ -1,6 +1,7 @@
 package com.hello.chat;
 
 import com.corundumstudio.socketio.SocketIOServer;
+import com.hello.service.CacheService;
 import lombok.Getter;
 
 /**
@@ -9,8 +10,10 @@ import lombok.Getter;
 @Getter
 public class AbstractListener {
     private SocketIOServer server;
+    private CacheService cache;
 
-    public AbstractListener(SocketIOServer server) {
+    public AbstractListener(SocketIOServer server, CacheService cache) {
         this.server = server;
+        this.cache = cache;
     }
 }
