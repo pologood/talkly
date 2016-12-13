@@ -26,7 +26,7 @@ import java.util.Map;
 @EnableJpaRepositories(
         entityManagerFactoryRef = "entityManagerFactoryPrimary",
         transactionManagerRef = "transactionManagerPrimary",
-        basePackages = {"com.hello.domain"}
+        basePackages = {"com.hello"}
 )
 public class DataSourceConfig {
     @Autowired

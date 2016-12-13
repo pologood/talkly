@@ -1,5 +1,5 @@
 <#include "/header.ftl">
-<h1>Hello Guest</h1>
+<h1>Hello Agent</h1>
 <input id="to" type="text">
 <input id="msg" type="text">
 <button type="button" onClick="sendMessage()" class="btn" id="send">Send</button>
