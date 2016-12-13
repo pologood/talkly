@@ -14,7 +14,7 @@ public class ChatServerConfig {
     @Bean
     public SocketIOServer chatServer() {
         com.corundumstudio.socketio.Configuration config = new com.corundumstudio.socketio.Configuration();
-        config.setHostname("localhost");
+
         config.setPort(9092);
 
         SocketIOServer server = new SocketIOServer(config);
