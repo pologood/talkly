@@ -5,6 +5,8 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.DataListener;
 import com.message.service.CacheService;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 /**
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Component;
 public class RegisterListener
         extends AbstractListener
         implements DataListener<Register> {
+    private final static Logger log = LogManager.getLogger(RegisterListener.class);
 
     public RegisterListener(SocketIOServer server, CacheService cache) {
         super(server, cache);
@@ -28,5 +31,10 @@ public class RegisterListener
         client.set("agent", message.getUsername());
         message.setClientId(client.getSessionId().toString());
         getCache().put(message.getUsername(), message);
+        log.debug("Register agent = "
+                + message.getUsername()
+                + ", clientId = "
+                + message.getClientId()
+        );
     }
 }
