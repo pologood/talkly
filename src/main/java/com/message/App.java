@@ -1,4 +1,4 @@
-package com.hello;
+package com.message;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

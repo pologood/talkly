@@ -1,7 +1,7 @@
-package com.hello.service;
+package com.message.service;
 
-import com.hello.domain.User;
-import com.hello.repository.UserRepository;
+import com.message.domain.User;
+import com.message.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;

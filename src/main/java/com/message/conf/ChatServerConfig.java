@@ -1,11 +1,8 @@
-package com.hello.conf;
+package com.message.conf;
 
 import com.corundumstudio.socketio.SocketIOServer;
-import com.hello.chat.msg.Message;
-import com.hello.chat.msg.MessageListener;
-import com.hello.chat.msg.Register;
-import com.hello.chat.msg.RegisterListener;
-import com.hello.service.CacheService;
+import com.message.chat.listener.*;
+import com.message.service.CacheService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -38,6 +35,7 @@ public class ChatServerConfig {
                 Register.class,
                 new RegisterListener(server, cache)
         );
+        server.addDisconnectListener(new MyDisconnectListener(server, cache));
 
         server.start();
         return server;

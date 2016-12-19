@@ -1,4 +1,4 @@
-package com.hello.service;
+package com.message.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;

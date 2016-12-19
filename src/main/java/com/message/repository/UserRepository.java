@@ -1,6 +1,6 @@
-package com.hello.repository;
+package com.message.repository;
 
-import com.hello.domain.User;
+import com.message.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

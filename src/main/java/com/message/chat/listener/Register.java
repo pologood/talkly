@@ -1,4 +1,4 @@
-package com.hello.chat.msg;
+package com.message.chat.listener;
 
 import lombok.Getter;
 import lombok.Setter;

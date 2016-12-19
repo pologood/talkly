@@ -1,4 +1,4 @@
-package com.hello.domain;
+package com.message.domain;
 
 import lombok.Getter;
 import lombok.Setter;

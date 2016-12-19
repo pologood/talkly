@@ -1,4 +1,4 @@
-package com.hello.conf;
+package com.message.conf;
 
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ import java.util.Map;
 @EnableJpaRepositories(
         entityManagerFactoryRef = "entityManagerFactoryPrimary",
         transactionManagerRef = "transactionManagerPrimary",
-        basePackages = {"com.hello"}
+        basePackages = {"com.message"}
 )
 public class DataSourceConfig {
     @Autowired
@@ -48,7 +48,7 @@ public class DataSourceConfig {
         return builder
                 .dataSource(dataSource)
                 .properties(getVendorProperties(dataSource))
-                .packages("com.hello.domain")
+                .packages("com.message.domain")
                 .persistenceUnit("primaryPersistenceUnit")
                 .build();
     }

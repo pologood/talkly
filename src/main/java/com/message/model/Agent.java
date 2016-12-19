@@ -1,4 +1,4 @@
-package com.hello.model;
+package com.message.model;
 
 import lombok.Getter;
 import lombok.Setter;

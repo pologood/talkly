@@ -1,6 +1,6 @@
-package com.hello.conf;
+package com.message.conf;
 
-import com.hello.service.AuthService;
+import com.message.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;

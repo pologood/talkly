@@ -1,4 +1,4 @@
-package com.hello.conf;
+package com.message.conf;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

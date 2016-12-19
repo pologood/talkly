@@ -1,9 +1,7 @@
-package com.hello.chat.msg;
+package com.message.chat.listener;
 
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.UUID;
 
 /**
  * Created by lex on 2016/12/9.
