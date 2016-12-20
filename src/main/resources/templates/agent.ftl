@@ -36,7 +36,7 @@
         socket.emit('send_message', {
             from: fingerprint,
             to: document.getElementById("to").value,
-            content: document.getElementById("listener").value
+            content: document.getElementById("msg").value
         });
     }
 </script>

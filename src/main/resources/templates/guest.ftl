@@ -4,6 +4,8 @@
 <input id="msg" type="text">
 <button type="button" onClick="sendMessage()" class="btn" id="send">Send</button>
 <button type="button" onClick="sendDisconnect()" class="btn">Disconnect</button>
+
+
 <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 <script src="http://cdn.jsdelivr.net/fingerprintjs2/1.4.1/fingerprint2.min.js"></script>
 <script>
