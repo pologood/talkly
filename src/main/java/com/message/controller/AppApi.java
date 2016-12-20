@@ -1,15 +1,13 @@
 package com.message.controller;
 
-import com.corundumstudio.socketio.SocketIOClient;
-import com.corundumstudio.socketio.SocketIOServer;
+import com.message.model.Agent;
+import com.message.model.Guest;
+import com.message.service.CacheService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by lex on 2016/12/9.
@@ -18,17 +16,23 @@ import java.util.UUID;
 @RequestMapping("/api")
 public class AppApi {
     @Autowired
-    private SocketIOServer chatServer;
+    private CacheService cache;
 
-    @RequestMapping("/users")
-    public List<UUID> online() {
-        List<UUID> users = new ArrayList<>();
-        Collection<SocketIOClient> clients = chatServer.getAllClients();
-        for (SocketIOClient client : clients) {
-            if (client.get("agent") != null) {
-                users.add(client.getSessionId());
-            }
+    @RequestMapping("/agents")
+    public List<Agent> agents() {
+        List<Agent> agents = new ArrayList<>();
+        for (Map.Entry<String, String> entry : cache.getAgents().entrySet()) {
+            agents.add(new Agent(entry.getKey(), entry.getValue()));
         }
-        return users;
+        return agents;
+    }
+
+    @RequestMapping("/guests")
+    public List<Guest> guests() {
+        List<Guest> guests = new ArrayList<>();
+        for (Map.Entry<String, String> entry : cache.getGuests().entrySet()) {
+            guests.add(new Guest(entry.getKey()));
+        }
+        return guests;
     }
 }

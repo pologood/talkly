@@ -14,4 +14,19 @@ public class MqConfig {
     public Queue talklyQueue() {
         return new Queue("talkly");
     }
+
+    @Bean
+    public Queue loginAgentQueue() {
+        return new Queue("talkly.loginAgent");
+    }
+
+    @Bean
+    public Queue logoutQueue() {
+        return new Queue("talkly.logout");
+    }
+
+    @Bean
+    public Queue chatQueue() {
+        return new Queue("talkly.chat");
+    }
 }

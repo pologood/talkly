@@ -5,11 +5,16 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by lex on 2016/12/13.
  */
 @Service
 public class CacheService {
+    private Map<String, String> agents = new HashMap<>();
+    private Map<String, String> guests = new HashMap<>();
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
@@ -26,5 +31,13 @@ public class CacheService {
 
     public void remove(String key) {
         redisTemplate.delete(key);
+    }
+
+    public Map<String, String> getAgents() {
+        return agents;
+    }
+
+    public Map<String, String> getGuests() {
+        return guests;
     }
 }

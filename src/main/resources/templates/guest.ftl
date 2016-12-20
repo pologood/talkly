@@ -19,11 +19,18 @@
         fingerprint = result;
         socket.on('connect', function () {
             console.log('Client has connected to the server!');
+            socket.emit('send_register', {
+                fingerPrint: fingerprint,
+                token: "zzzzz"
+            });
         });
         socket.on('disconnect', function () {
             console.log('The client has disconnected!');
         });
         socket.on('get_message', function (data) {
+            console.log(data);
+        });
+        socket.on('update_agents', function (data) {
             console.log(data);
         });
     });

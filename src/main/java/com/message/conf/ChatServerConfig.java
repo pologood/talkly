@@ -5,6 +5,7 @@ import com.message.chat.listener.*;
 import com.message.mq.Sender;
 import com.message.service.CacheService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +22,7 @@ public class ChatServerConfig {
     private Sender sender;
 
     @Bean
+    @Qualifier("chatServer")
     public SocketIOServer chatServer(
             @Value("${socket.port}") Integer socketPort
     ) {
@@ -38,7 +40,7 @@ public class ChatServerConfig {
                 Register.class,
                 new RegisterListener(server, cache, sender)
         );
-        server.addDisconnectListener(new MyDisconnectListener(server, cache, sender));
+        server.addDisconnectListener(new DisconnectListener(server, cache, sender));
 
         server.start();
         return server;

@@ -35,16 +35,7 @@ public class RegisterListener
             Register message,
             AckRequest ackRequest
     ) throws Exception {
-        client.set("agent", message.getUsername());
         message.setClientId(client.getSessionId().toString());
-        getCache().put(message.getUsername(), message);
-        log.debug("Register agent = "
-                + message.getUsername()
-                + ", clientId = "
-                + message.getClientId()
-        );
-        for (int i = 0; i < 100; i++) {
-            getSender().send();
-        }
+        getSender().loginAgent(message);
     }
 }
