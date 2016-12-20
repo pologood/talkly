@@ -7,7 +7,7 @@
             <i class="fa fa-search"></i>
         </div>
         <ul class="list">
-            <li class="clearfix" v-for="agent in agents">
+            <li class="clearfix" v-for="agent in agents" v-on:click="selectAgent(agent)">
                 <img class="avatar" src="img/anon-avatar.jpg" alt="avatar"/>
                 <div class="about">
                     <div class="name">{{agent.name}}</div>
@@ -18,15 +18,15 @@
     <div class="chat">
         <div class="chat-history">
             <ul>
-                <li class="clearfix">
-                    <div class="message-data align-right">
-                        <span class="message-data-time">10:10 AM, Today</span> &nbsp; &nbsp;
-                        <span class="message-data-name">Olia</span> <i class="fa fa-circle me"></i>
+                <li class="clearfix" v-for="msg in currentAgent.histories">
+                <#--<div class="message-data align-right">-->
+                        <#--<span class="message-data-time">{{msg.createTime}}</span> &nbsp; &nbsp;-->
+                        <#--<span class="message-data-name">{{msg.from}}</span> <i class="fa fa-circle me"></i>-->
 
-                    </div>
-                    <div class="message other-message float-right">
-                        Hi Vincent, how are you? How is the project coming along?
-                    </div>
+                    <#--</div>-->
+                    <#--<div class="message float-right" v-bind:class="{'other-message': !msg.isMe, 'my-message':msg.isMe, 'float-right', msg.isMe}">-->
+                        <#--{{msg.content}}-->
+                    <#--</div>-->
                 </li>
 
                 <li>
@@ -75,10 +75,12 @@
         </div> <!-- end chat-history -->
 
         <div class="chat-message clearfix">
-            <textarea name="message-to-send" id="message-to-send" placeholder="Type your message" rows="3"></textarea>
+            <textarea name="message-to-send" id="message-to-send"
+                      v-model="message"
+                      placeholder="Type your message" rows="3"></textarea>
             <i class="fa fa-file-o"></i> &nbsp;&nbsp;&nbsp;
             <i class="fa fa-file-image-o"></i>
-            <button>Send</button>
+            <button v-click="sendMessage(message)">Send</button>
         </div>
     </div>
 </div>
@@ -89,6 +91,9 @@
     var vm = new Vue({
         el: '#chatVM',
         data: {
+            message: '',
+            fingerPrint: '',
+            currentAgent: {},
             agents: [{}]
         },
         methods: {
@@ -96,6 +101,27 @@
                 $.get('/api/agents', function (data) {
                     vm.agents = data;
                 })
+            },
+            selectAgent: function (agent) {
+                if (vm.currentAgent) {
+                    vm.currentAgent.active = false;
+                }
+                vm.currentAgent = agent;
+                agent.active = true;
+            },
+            sendMessage: function (message) {
+                if (!message) return;
+                var msg = {
+                    from: vm.fingerPrint,
+                    to: vm.currentAgent.username,
+                    content: message,
+                    type: 'text',
+                    createTime: new Date(),
+                    isMe: true
+                };
+                socket.emit('send_message', msg);
+                vm.currentAgent.histories = vm.currentAgent.histories || [];
+                vm.currentAgent.histories.push(msg)
             }
         }
     });
@@ -126,11 +152,6 @@
         socket.disconnect();
     }
     function sendMessage() {
-        socket.emit('send_message', {
-            from: fingerprint,
-            to: document.getElementById("to").value,
-            content: document.getElementById("msg").value
-        });
     }
 </script>
 <#include "/footer.ftl">
