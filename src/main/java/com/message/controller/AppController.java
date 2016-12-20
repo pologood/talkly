@@ -27,15 +27,6 @@ public class AppController extends AbstractController {
     @RequestMapping("/")
     public String index(Model model) {
         List<Agent> users = new ArrayList<>();
-        Collection<SocketIOClient> clients = chatServer.getAllClients();
-        for (SocketIOClient client : clients) {
-            if (client.get("agent") != null) {
-                users.add(new Agent(
-                        client.get("agent"),
-                        client.getSessionId().toString())
-                );
-            }
-        }
         model.addAttribute("users", users);
         return "index";
     }

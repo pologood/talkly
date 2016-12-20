@@ -3,6 +3,10 @@ package com.message.mq;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.message.chat.listener.Message;
 import com.message.chat.listener.Register;
+import com.message.domain.User;
+import com.message.model.Agent;
+import com.message.model.Guest;
+import com.message.repository.UserRepository;
 import com.message.service.CacheService;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -12,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -25,34 +30,56 @@ public class Receiver {
     @Autowired
     @Qualifier("chatServer")
     private SocketIOServer server;
+    @Autowired
+    private UserRepository userRepo;
 
     @RabbitListener(queues = "talkly.loginAgent")
     @RabbitHandler
     public void loginAgent(Register message) {
         log.debug("Receiver : " + message.toString());
         if (message.getUsername() != null) {
-            cache.getAgents().put(message.getUsername(), message.getClientId());
+            User user = userRepo.findByUsername(message.getUsername());
+            if (user == null) {
+                return;
+            }
+            cache.getAgents().put(message.getUsername(), new Agent(
+                    message.getUsername(),
+                    user.getName(),
+                    message.getClientId().toString()
+            ));
             server.getBroadcastOperations().sendEvent(
                     "update_agents",
-                    cache.getAgents().keySet()
+                    cache.getAgents().values()
             );
         } else {
-            cache.getGuests().put(message.getFingerPrint(), message.getClientId());
+            cache.getGuests().put(message.getFingerPrint(), new Guest(
+                    message.getFingerPrint(),
+                    message.getFingerPrint(),
+                    message.getClientId()
+            ));
         }
     }
 
     @RabbitListener(queues = "talkly.logout")
     @RabbitHandler
     public void logout(String clientId) {
-        if (cache.getAgents().containsValue(clientId)) {
-            cache.getAgents().values().remove(clientId);
-            server.getBroadcastOperations().sendEvent(
-                    "update_agents",
-                    cache.getAgents().keySet()
-            );
+        for (Map.Entry<String, Agent> entry : cache.getAgents().entrySet()) {
+            if (entry.getValue() != null
+                    && clientId.equals(entry.getValue().getClientId())) {
+                cache.getAgents().remove(entry.getKey());
+                server.getBroadcastOperations().sendEvent(
+                        "update_agents",
+                        cache.getAgents().keySet()
+                );
+                break;
+            }
         }
-        if (cache.getGuests().containsValue(clientId)) {
-            cache.getGuests().values().remove(clientId);
+        for (Map.Entry<String, Guest> entry : cache.getGuests().entrySet()) {
+            if (entry.getValue() != null
+                    && clientId.equals(entry.getValue().getClientId())) {
+                cache.getGuests().remove(entry.getKey());
+                break;
+            }
         }
     }
 
@@ -61,10 +88,10 @@ public class Receiver {
     public void chat(Message message) {
         String toClientId = null;
         if (cache.getAgents().containsKey(message.getTo())) {
-            toClientId = cache.getAgents().get(toClientId);
+            toClientId = cache.getAgents().get(message.getTo()).getClientId();
         }
         if (cache.getGuests().containsKey(message.getTo())) {
-            toClientId = cache.getGuests().get(toClientId);
+            toClientId = cache.getGuests().get(message.getTo()).getClientId();
         }
         if (toClientId != null) {
             server.getClient(UUID.fromString(toClientId)).sendEvent(

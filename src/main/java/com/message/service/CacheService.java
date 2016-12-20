@@ -1,5 +1,7 @@
 package com.message.service;
 
+import com.message.model.Agent;
+import com.message.model.Guest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -13,8 +15,8 @@ import java.util.Map;
  */
 @Service
 public class CacheService {
-    private Map<String, String> agents = new HashMap<>();
-    private Map<String, String> guests = new HashMap<>();
+    private Map<String, Agent> agents = new HashMap<>();
+    private Map<String, Guest> guests = new HashMap<>();
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
@@ -33,11 +35,11 @@ public class CacheService {
         redisTemplate.delete(key);
     }
 
-    public Map<String, String> getAgents() {
+    public Map<String, Agent> getAgents() {
         return agents;
     }
 
-    public Map<String, String> getGuests() {
+    public Map<String, Guest> getGuests() {
         return guests;
     }
 }

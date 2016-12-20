@@ -10,8 +10,12 @@ import lombok.Setter;
 @Setter
 public class Guest {
     private String fingerPrint;
+    private String name;
+    private String clientId;
 
-    public Guest(String fingerPrint) {
+    public Guest(String fingerPrint, String name, String clientId) {
         this.fingerPrint = fingerPrint;
+        this.name = name;
+        this.clientId = clientId;
     }
 }

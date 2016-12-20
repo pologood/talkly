@@ -37,5 +37,6 @@ public class RegisterListener
     ) throws Exception {
         message.setClientId(client.getSessionId().toString());
         getSender().loginAgent(message);
+        ackRequest.sendAckData(1);
     }
 }

@@ -19,20 +19,12 @@ public class AppApi {
     private CacheService cache;
 
     @RequestMapping("/agents")
-    public List<Agent> agents() {
-        List<Agent> agents = new ArrayList<>();
-        for (Map.Entry<String, String> entry : cache.getAgents().entrySet()) {
-            agents.add(new Agent(entry.getKey(), entry.getValue()));
-        }
-        return agents;
+    public Collection<Agent> agents() {
+        return cache.getAgents().values();
     }
 
     @RequestMapping("/guests")
-    public List<Guest> guests() {
-        List<Guest> guests = new ArrayList<>();
-        for (Map.Entry<String, String> entry : cache.getGuests().entrySet()) {
-            guests.add(new Guest(entry.getKey()));
-        }
-        return guests;
+    public Collection<Guest> guests() {
+        return cache.getGuests().values();
     }
 }

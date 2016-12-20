@@ -11,11 +11,13 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class Agent implements Serializable {
+    private String clientId;
     private String username;
     private String name;
 
-    public Agent(String username, String name) {
+    public Agent(String username, String name, String cleintId) {
         this.username = username;
         this.name = name;
+        this.clientId = clientId;
     }
 }
