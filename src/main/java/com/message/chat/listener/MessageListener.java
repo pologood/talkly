@@ -4,6 +4,7 @@ import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.DataListener;
+import com.message.mq.Sender;
 import com.message.service.CacheService;
 
 import java.util.UUID;
@@ -15,8 +16,12 @@ public class MessageListener
         extends AbstractListener
         implements DataListener<Message> {
 
-    public MessageListener(SocketIOServer server, CacheService cache) {
-        super(server, cache);
+    public MessageListener(
+            SocketIOServer server,
+            CacheService cache,
+            Sender sender
+    ) {
+        super(server, cache, sender);
     }
 
     @Override

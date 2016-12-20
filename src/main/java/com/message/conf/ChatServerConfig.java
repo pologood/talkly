@@ -2,6 +2,7 @@ package com.message.conf;
 
 import com.corundumstudio.socketio.SocketIOServer;
 import com.message.chat.listener.*;
+import com.message.mq.Sender;
 import com.message.service.CacheService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +17,8 @@ public class ChatServerConfig {
 
     @Autowired
     private CacheService cache;
+    @Autowired
+    private Sender sender;
 
     @Bean
     public SocketIOServer chatServer(
@@ -29,13 +32,13 @@ public class ChatServerConfig {
 
         server.addEventListener("send_message",
                 Message.class,
-                new MessageListener(server, cache)
+                new MessageListener(server, cache, sender)
         );
         server.addEventListener("send_register",
                 Register.class,
-                new RegisterListener(server, cache)
+                new RegisterListener(server, cache, sender)
         );
-        server.addDisconnectListener(new MyDisconnectListener(server, cache));
+        server.addDisconnectListener(new MyDisconnectListener(server, cache, sender));
 
         server.start();
         return server;

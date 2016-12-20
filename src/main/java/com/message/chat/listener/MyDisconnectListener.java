@@ -3,6 +3,7 @@ package com.message.chat.listener;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.DisconnectListener;
+import com.message.mq.Sender;
 import com.message.service.CacheService;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -16,8 +17,12 @@ public class MyDisconnectListener
 
     private final static Logger log = LogManager.getLogger(MyDisconnectListener.class);
 
-    public MyDisconnectListener(SocketIOServer server, CacheService cache) {
-        super(server, cache);
+    public MyDisconnectListener(
+            SocketIOServer server,
+            CacheService cache,
+            Sender sender
+    ) {
+        super(server, cache, sender);
     }
 
     @Override
