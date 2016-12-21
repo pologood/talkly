@@ -49,8 +49,6 @@
     </div>
 </div>
 
-<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
-<script src="http://cdn.jsdelivr.net/fingerprintjs2/1.4.1/fingerprint2.min.js"></script>
 <script>
     var vm = new Vue({
         el: '#chatVM',
@@ -139,6 +137,7 @@
             vm.agents = [];
             vm.agents = agents;
             console.log(data);
+            newExcitingAlerts("!!!您收到一条新消息!!!");
             scrollHistoryToBottom();
         });
     });
@@ -153,6 +152,14 @@
     }
     function sendDisconnect() {
         socket.disconnect();
+    }
+    function newExcitingAlerts(msg) {
+        $.titleAlert(msg, {
+            requireBlur: true,
+            stopOnFocus: true,
+            duration: 0,
+            interval: 700
+        });
     }
 </script>
 <#include "/footer.ftl">
