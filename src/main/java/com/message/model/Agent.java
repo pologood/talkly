@@ -15,7 +15,7 @@ public class Agent implements Serializable {
     private String username;
     private String name;
 
-    public Agent(String username, String name, String cleintId) {
+    public Agent(String username, String name, String clientId) {
         this.username = username;
         this.name = name;
         this.clientId = clientId;

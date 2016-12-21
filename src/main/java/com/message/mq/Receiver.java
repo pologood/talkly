@@ -87,8 +87,10 @@ public class Receiver {
     @RabbitHandler
     public void chat(Message message) {
         String toClientId = null;
+        String fromUsername = null;
         if (cache.getAgents().containsKey(message.getTo())) {
             toClientId = cache.getAgents().get(message.getTo()).getClientId();
+            fromUsername = cache.getAgents().get(message.getTo()).getUsername();
         }
         if (cache.getGuests().containsKey(message.getTo())) {
             toClientId = cache.getGuests().get(message.getTo()).getClientId();
@@ -98,7 +100,7 @@ public class Receiver {
                     "get_message",
                     new Message(
                             message.getTo(),
-                            message.getFrom(),
+                            fromUsername,
                             message.getContent()
                     )
             );

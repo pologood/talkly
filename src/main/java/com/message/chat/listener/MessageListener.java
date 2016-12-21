@@ -30,7 +30,6 @@ public class MessageListener
             Message message,
             AckRequest ackRequest
     ) throws Exception {
-        getServer().getClient(UUID.fromString(message.getTo()))
-                .sendEvent("get_message", message);
+        getSender().chat(message);
     }
 }

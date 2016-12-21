@@ -15,72 +15,34 @@
             </li>
         </ul>
     </div>
-    <div class="chat">
+    <div class="chat" v-if="currentAgent.username">
         <div class="chat-history">
             <ul>
                 <li class="clearfix" v-for="msg in currentAgent.histories">
-                <#--<div class="message-data align-right">-->
-                        <#--<span class="message-data-time">{{msg.createTime}}</span> &nbsp; &nbsp;-->
-                        <#--<span class="message-data-name">{{msg.from}}</span> <i class="fa fa-circle me"></i>-->
-
-                    <#--</div>-->
-                    <#--<div class="message float-right" v-bind:class="{'other-message': !msg.isMe, 'my-message':msg.isMe, 'float-right', msg.isMe}">-->
-                        <#--{{msg.content}}-->
-                    <#--</div>-->
-                </li>
-
-                <li>
-                    <div class="message-data">
-                        <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>
-                        <span class="message-data-time">10:12 AM, Today</span>
+                    <div class="message-data" v-if="!msg.isMe">
+                        <i class="fa fa-circle other"></i>
+                        <span class="message-data-name">{{msg.from}}</span>&nbsp;&nbsp;
+                        <span class="message-data-time">{{msg.createTime}}</span>
                     </div>
-                    <div class="message my-message">
-                        Are we meeting today? Project has been already finished and I have results to show you.
+                    <div class="message-data align-right" v-if="msg.isMe">
+                        <span class="message-data-time">{{msg.createTime}}</span>&nbsp;&nbsp;
+                        <span class="message-data-name">{{msg.from}}</span>
+                        <i class="fa fa-circle me"></i>
+                    </div>
+                    <div class="message"
+                         v-bind:class="{'other-message': !msg.isMe, 'my-message':msg.isMe, 'float-right': msg.isMe}">
+                        {{msg.content}}
                     </div>
                 </li>
-
-                <li class="clearfix">
-                    <div class="message-data align-right">
-                        <span class="message-data-time">10:14 AM, Today</span> &nbsp; &nbsp;
-                        <span class="message-data-name">Olia</span> <i class="fa fa-circle me"></i>
-
-                    </div>
-                    <div class="message other-message float-right">
-                        Well I am not sure. The rest of the team is not here yet. Maybe in an hour or so? Have you faced
-                        any problems at the last phase of the project?
-                    </div>
-                </li>
-
-                <li>
-                    <div class="message-data">
-                        <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>
-                        <span class="message-data-time">10:20 AM, Today</span>
-                    </div>
-                    <div class="message my-message">
-                        Actually everything was fine. I'm very excited to show this to our team.
-                    </div>
-                </li>
-
-                <li>
-                    <div class="message-data">
-                        <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>
-                        <span class="message-data-time">10:31 AM, Today</span>
-                    </div>
-                    <i class="fa fa-circle online"></i>
-                    <i class="fa fa-circle online" style="color: #AED2A6"></i>
-                    <i class="fa fa-circle online" style="color:#DAE9DA"></i>
-                </li>
-
             </ul>
-        </div> <!-- end chat-history -->
-
+        </div>
         <div class="chat-message clearfix">
             <textarea name="message-to-send" id="message-to-send"
                       v-model="message"
                       placeholder="Type your message" rows="3"></textarea>
             <i class="fa fa-file-o"></i> &nbsp;&nbsp;&nbsp;
             <i class="fa fa-file-image-o"></i>
-            <button v-click="sendMessage(message)">Send</button>
+            <button v-on:click="sendMessage(message)">Send</button>
         </div>
     </div>
 </div>
@@ -122,6 +84,7 @@
                 socket.emit('send_message', msg);
                 vm.currentAgent.histories = vm.currentAgent.histories || [];
                 vm.currentAgent.histories.push(msg)
+                vm.message = null;
             }
         }
     });
@@ -142,6 +105,19 @@
             console.log('The client has disconnected!');
         });
         socket.on('get_message', function (data) {
+            for (var i = 0; vm.agents && i < vm.agents.length; i++) {
+                var agent = vm.agents[i];
+                if (agent) {
+                    agent.histories = agent.histories || [];
+                    if (data.fingerPrint != vm.fingerPrint) {
+                        data.createTime = new Date();
+                        agent.histories.push(data);
+                    }
+                }
+            }
+            var agents = vm.agents;
+            vm.agents = [];
+            vm.agents = agents;
             console.log(data);
         });
     });
@@ -150,8 +126,6 @@
     }
     function sendDisconnect() {
         socket.disconnect();
-    }
-    function sendMessage() {
     }
 </script>
 <#include "/footer.ftl">

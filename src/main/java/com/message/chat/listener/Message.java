@@ -3,12 +3,14 @@ package com.message.chat.listener;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 /**
  * Created by lex on 2016/12/9.
  */
 @Getter
 @Setter
-public class Message {
+public class Message implements Serializable {
     private String from;
     private String to;
     private String type;
