@@ -3,7 +3,7 @@
 <div id="chatVM" class="chat-container">
     <div class="people-list" id="people-list">
         <div class="search">
-            <input type="text" placeholder="search" v-model="searchText"/>
+            <input type="text" placeholder="搜索" v-model="searchText"/>
             <i class="fa fa-search"></i>
         </div>
         <ul class="list">
@@ -28,23 +28,23 @@
                     </div>
                     <div class="message-data align-right" v-if="msg.isMe">
                         <span class="message-data-time">{{msg.createTime|moment}}</span>&nbsp;&nbsp;
-                        <span class="message-data-name">Me</span>
+                        <span class="message-data-name">我</span>
                         <i class="fa fa-circle me"></i>
                     </div>
-                    <div class="message"
-                         v-bind:class="{'other-message': !msg.isMe, 'my-message':msg.isMe, 'float-right': msg.isMe}">
-                        {{msg.content}}
-                    </div>
+                    <pre class="message"
+                         v-bind:class="{'other-message': !msg.isMe, 'my-message':msg.isMe, 'float-right': msg.isMe}"
+                         v-html="msg.content">
+                    </pre>
                 </li>
             </ul>
         </div>
         <div class="chat-message clearfix">
             <textarea name="message-to-send" id="message-to-send"
                       v-model="message"
-                      placeholder="Type your message" rows="3"></textarea>
+                      placeholder="输入文字..." rows="3"></textarea>
             <i class="fa fa-file-o"></i> &nbsp;&nbsp;&nbsp;
             <i class="fa fa-file-image-o"></i>
-            <button v-on:click="sendMessage(message)">Send</button>
+            <button v-on:click="sendMessage(message)">发送</button>
         </div>
     </div>
 </div>

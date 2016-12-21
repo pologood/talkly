@@ -200,6 +200,8 @@ body {
     border-radius: 7px;
     margin-bottom: 20px;
     position: relative;
+    max-width: 100%;
+    overflow-wrap: break-word;
 }
 
 .chat-container .chat .chat-history .message:after {
