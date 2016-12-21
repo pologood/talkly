@@ -33,10 +33,10 @@
                         <span class="message-data-name">我</span>
                         <i class="fa fa-circle me"></i>
                     </div>
-                    <pre class="message"
-                         v-bind:class="{'other-message': !msg.isMe, 'my-message':msg.isMe, 'float-right': msg.isMe}"
-                         v-html="msg.content">
-                    </pre>
+                    <div class="message"
+                         v-bind:class="{'other-message': !msg.isMe, 'my-message':msg.isMe, 'float-right': msg.isMe}">
+                        <pre v-html="msg.content"></pre>
+                    </div>
                 </li>
             </ul>
         </div>
@@ -74,6 +74,7 @@
                 vm.currentAgent = agent;
                 agent.active = true;
                 agent.hasNewMsg = false;
+                scrollHistoryToBottom();
             },
             sendMessage: function (message) {
                 if (!message) return;
@@ -131,7 +132,6 @@
                 if (agent) {
                     agent.histories = agent.histories || [];
                     if (data.from == agent.username) {
-                        data.createTime = new Date();
                         agent.histories.push(data);
                         if (agent != vm.currentAgent) {
                             agent.hasNewMsg = true;
