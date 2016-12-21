@@ -320,3 +320,10 @@ body {
     width: 55px;
     height: 55px;
 }
+.chat-container .about .blink {
+    animation: blinker 1.5s cubic-bezier(.5, 0, 1, 1) infinite alternate;
+}
+@keyframes blinker {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}

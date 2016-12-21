@@ -12,7 +12,9 @@
                 v-bind:class="{'active':agent==currentAgent}">
                 <img class="avatar" src="img/anon-avatar.jpg" alt="avatar"/>
                 <div class="about">
-                    <div class="name">{{agent.name}}</div>
+                    <div class="name">{{agent.name}}
+                        <i class="fa fa-circle text-danger blink" v-if="agent.hasNewMsg"></i>
+                    </div>
                 </div>
             </li>
         </ul>
@@ -71,6 +73,7 @@
                 }
                 vm.currentAgent = agent;
                 agent.active = true;
+                agent.hasNewMsg = false;
             },
             sendMessage: function (message) {
                 if (!message) return;
@@ -127,9 +130,12 @@
                 var agent = vm.agents[i];
                 if (agent) {
                     agent.histories = agent.histories || [];
-                    if (data.fingerPrint != vm.fingerPrint) {
+                    if (data.from == agent.username) {
                         data.createTime = new Date();
                         agent.histories.push(data);
+                        if (agent != vm.currentAgent) {
+                            agent.hasNewMsg = true;
+                        }
                     }
                 }
             }

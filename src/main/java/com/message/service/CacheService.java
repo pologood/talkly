@@ -7,16 +7,17 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by lex on 2016/12/13.
  */
 @Service
 public class CacheService {
-    private Map<String, Agent> agents = new HashMap<>();
-    private Map<String, Guest> guests = new HashMap<>();
+    private Map<String, Agent> agents = new ConcurrentHashMap<>();
+    private Map<String, String> clients = new ConcurrentHashMap<>();
+    private Map<String, Guest> guests = new ConcurrentHashMap<>();
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
@@ -33,6 +34,10 @@ public class CacheService {
 
     public void remove(String key) {
         redisTemplate.delete(key);
+    }
+
+    public Map<String, String> getClients() {
+        return clients;
     }
 
     public Map<String, Agent> getAgents() {

@@ -47,6 +47,10 @@ public class Receiver {
                     user.getName(),
                     message.getClientId().toString()
             ));
+            cache.getClients().put(
+                    message.getClientId().toString(),
+                    message.getUsername()
+            );
             server.getBroadcastOperations().sendEvent(
                     "update_agents",
                     cache.getAgents().values()
@@ -57,28 +61,28 @@ public class Receiver {
                     message.getFingerPrint(),
                     message.getClientId()
             ));
+            cache.getClients().put(
+                    message.getClientId().toString(),
+                    message.getFingerPrint()
+            );
         }
     }
 
     @RabbitListener(queues = "talkly.logout")
     @RabbitHandler
     public void logout(String clientId) {
-        for (Map.Entry<String, Agent> entry : cache.getAgents().entrySet()) {
-            if (entry.getValue() != null
-                    && clientId.equals(entry.getValue().getClientId())) {
-                cache.getAgents().remove(entry.getKey());
+        if (cache.getClients().containsKey(clientId)) {
+            String username = cache.getClients().get(clientId);
+            cache.getClients().remove(clientId);
+            if (cache.getAgents().containsKey(username)) {
                 server.getBroadcastOperations().sendEvent(
                         "update_agents",
                         cache.getAgents().keySet()
                 );
-                break;
+                cache.getAgents().remove(username);
             }
-        }
-        for (Map.Entry<String, Guest> entry : cache.getGuests().entrySet()) {
-            if (entry.getValue() != null
-                    && clientId.equals(entry.getValue().getClientId())) {
-                cache.getGuests().remove(entry.getKey());
-                break;
+            if (cache.getGuests().containsKey(username)) {
+                cache.getGuests().remove(username);
             }
         }
     }
@@ -87,20 +91,19 @@ public class Receiver {
     @RabbitHandler
     public void chat(Message message) {
         String toClientId = null;
-        String fromUsername = null;
         if (cache.getAgents().containsKey(message.getTo())) {
             toClientId = cache.getAgents().get(message.getTo()).getClientId();
-            fromUsername = cache.getAgents().get(message.getTo()).getUsername();
         }
         if (cache.getGuests().containsKey(message.getTo())) {
             toClientId = cache.getGuests().get(message.getTo()).getClientId();
         }
         if (toClientId != null) {
+            String fromUsername = cache.getClients().get(message.getFrom());
             server.getClient(UUID.fromString(toClientId)).sendEvent(
                     "get_message",
                     new Message(
-                            message.getTo(),
                             fromUsername,
+                            message.getTo(),
                             message.getContent()
                     )
             );

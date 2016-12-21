@@ -30,6 +30,7 @@ public class MessageListener
             Message message,
             AckRequest ackRequest
     ) throws Exception {
+        message.setFrom(client.getSessionId().toString());
         getSender().chat(message);
     }
 }
