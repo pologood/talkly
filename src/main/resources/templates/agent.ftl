@@ -7,7 +7,9 @@
             <i class="fa fa-search"></i>
         </div>
         <ul class="list">
-            <li class="clearfix" v-for="agent in filteredAgents" v-on:click="selectAgent(agent)">
+            <li class="clearfix" v-for="agent in filteredAgents"
+                v-on:click="selectAgent(agent)"
+                v-bind:class="{'active':agent==currentAgent}">
                 <img class="avatar" src="img/anon-avatar.jpg" alt="avatar"/>
                 <div class="about">
                     <div class="name">{{agent.name}}</div>
