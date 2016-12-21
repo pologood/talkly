@@ -59,7 +59,7 @@
             message: '',
             fingerPrint: '',
             currentAgent: {},
-            agents: [{}]
+            agents: []
         },
         methods: {
             init: function () {
@@ -121,6 +121,29 @@
             }, function (data) {
                 console.log('Client register is acked');
                 vm.init();
+
+                socket.on('get_messages', function (data) {
+                    var used;
+                    interval(function(){
+                        if(used) return;
+                        var agents = vm.agents;
+                        for (var i = 0; agents && i < agents.length; i++) {
+                            var agent = agents[i];
+                            if (agent) {
+                                agent.histories = agent.histories || [];
+                                if (data[0].from == agent.username) {
+                                    agent.histories = data;
+                                    if (agent != vm.currentAgent) {
+                                        agent.hasNewMsg = true;
+                                        used = 1;
+                                    }
+                                }
+                            }
+                        }
+                        vm.agents = [];
+                        vm.agents = agents;
+                    }, 500, 10)
+                });
             });
         });
         socket.on('disconnect', function () {
@@ -166,6 +189,25 @@
             duration: 0,
             interval: 700
         });
+    }
+    function interval(func, wait, times){
+        var interv = function(w, t){
+            return function(){
+                if(typeof t === "undefined" || t-- > 0){
+                    setTimeout(interv, w);
+                    try{
+                        func.call(null);
+                    }
+                    catch(e){
+                        t = 0;
+                        throw e.toString();
+                    }
+                }
+            };
+        }(wait, times);
+
+        setTimeout(interv, wait);
+        return interv;
     }
 </script>
 <#include "/footer.ftl">

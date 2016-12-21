@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -55,6 +57,13 @@ public class Receiver {
                     "update_agents",
                     cache.getAgents().values()
             );
+            if (cache.get(message.getUsername() + ":offline") != null) {
+                server.getClient(UUID.fromString(message.getClientId())).sendEvent(
+                        "get_messages",
+                        cache.get(message.getUsername() + ":offline")
+                );
+                cache.remove(message.getUsername() + ":offline");
+            }
         } else {
             cache.getGuests().put(message.getFingerPrint(), new Guest(
                     message.getFingerPrint(),
@@ -97,16 +106,43 @@ public class Receiver {
         if (cache.getGuests().containsKey(message.getTo())) {
             toClientId = cache.getGuests().get(message.getTo()).getClientId();
         }
+
+        String fromUsername = cache.getClients().get(message.getFrom());
+        if (fromUsername == null) {
+            log.error("fromUsername not found");
+            return;
+        }
+
         if (toClientId != null) {
-            String fromUsername = cache.getClients().get(message.getFrom());
+            /**
+             * user online
+             */
             server.getClient(UUID.fromString(toClientId)).sendEvent(
                     "get_message",
                     new Message(
                             fromUsername,
                             message.getTo(),
-                            message.getContent()
+                            message.getContent(),
+                            message.getCreateTime()
                     )
             );
+        } else {
+            /**
+             * user offline
+             */
+            List<Message> offlineMessages = null;
+            if (cache.get(message.getTo() + ":offline") == null) {
+                offlineMessages = new ArrayList<>();
+            } else {
+                offlineMessages = (List<Message>) cache.get(message.getTo() + ":offline");
+            }
+            offlineMessages.add(new Message(
+                    fromUsername,
+                    message.getTo(),
+                    message.getContent(),
+                    message.getCreateTime()
+            ));
+            cache.put(message.getTo() + ":offline", offlineMessages);
         }
     }
 }
