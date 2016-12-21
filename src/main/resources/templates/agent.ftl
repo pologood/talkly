@@ -3,11 +3,11 @@
 <div id="chatVM" class="chat-container">
     <div class="people-list" id="people-list">
         <div class="search">
-            <input type="text" placeholder="search"/>
+            <input type="text" placeholder="search" v-model="searchText"/>
             <i class="fa fa-search"></i>
         </div>
         <ul class="list">
-            <li class="clearfix" v-for="agent in agents" v-on:click="selectAgent(agent)">
+            <li class="clearfix" v-for="agent in filteredAgents" v-on:click="selectAgent(agent)">
                 <img class="avatar" src="img/anon-avatar.jpg" alt="avatar"/>
                 <div class="about">
                     <div class="name">{{agent.name}}</div>
@@ -53,6 +53,7 @@
     var vm = new Vue({
         el: '#chatVM',
         data: {
+            searchText: '',
             message: '',
             fingerPrint: '',
             currentAgent: {},
@@ -92,6 +93,17 @@
             moment: function (date) {
                 return moment(date).format('YYYY-MM-DD, HH:mm:ss');
             }
+        },
+        computed: {
+            filteredAgents: function () {
+                var self = this;
+                if (!self.searchText) return self.agents;
+                return self.agents.filter(function (agent) {
+                    if (!agent.name) return false;
+                    if (!agent.name.indexOf) return false;
+                    return agent.name.indexOf(self.searchText) >= 0;
+                })
+            }
         }
     });
     var socket = io.connect('http://localhost:9092');
@@ -129,7 +141,7 @@
         });
     });
     function scrollHistoryToBottom() {
-        setTimeout(function(){
+        setTimeout(function () {
             var objDiv = document.getElementById("chat-history");
             objDiv.scrollTop = objDiv.scrollHeight;
         })
