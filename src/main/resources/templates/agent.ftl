@@ -16,17 +16,17 @@
         </ul>
     </div>
     <div class="chat" v-if="currentAgent.username">
-        <div class="chat-history">
+        <div id="chat-history" class="chat-history">
             <ul>
                 <li class="clearfix" v-for="msg in currentAgent.histories">
                     <div class="message-data" v-if="!msg.isMe">
                         <i class="fa fa-circle other"></i>
                         <span class="message-data-name">{{msg.from}}</span>&nbsp;&nbsp;
-                        <span class="message-data-time">{{msg.createTime}}</span>
+                        <span class="message-data-time">{{msg.createTime|moment}}</span>
                     </div>
                     <div class="message-data align-right" v-if="msg.isMe">
-                        <span class="message-data-time">{{msg.createTime}}</span>&nbsp;&nbsp;
-                        <span class="message-data-name">{{msg.from}}</span>
+                        <span class="message-data-time">{{msg.createTime|moment}}</span>&nbsp;&nbsp;
+                        <span class="message-data-name">Me</span>
                         <i class="fa fa-circle me"></i>
                     </div>
                     <div class="message"
@@ -85,6 +85,12 @@
                 vm.currentAgent.histories = vm.currentAgent.histories || [];
                 vm.currentAgent.histories.push(msg)
                 vm.message = null;
+                scrollHistoryToBottom();
+            }
+        },
+        filters: {
+            moment: function (date) {
+                return moment(date).format('YYYY-MM-DD, HH:mm:ss');
             }
         }
     });
@@ -119,8 +125,15 @@
             vm.agents = [];
             vm.agents = agents;
             console.log(data);
+            scrollHistoryToBottom();
         });
     });
+    function scrollHistoryToBottom() {
+        setTimeout(function(){
+            var objDiv = document.getElementById("chat-history");
+            objDiv.scrollTop = objDiv.scrollHeight;
+        })
+    }
     function getURLParameter(name) {
         return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
     }

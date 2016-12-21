@@ -7,6 +7,7 @@
     <link href="http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
     <script src="http://cdn.bootcss.com/jquery/3.1.1/jquery.js"></script>
+    <script src="http://cdn.bootcss.com/moment.js/2.17.1/moment.js"></script>
     <script src="http://cdn.bootcss.com/vue/2.1.6/vue.js"></script>
 </head>
 <body>
