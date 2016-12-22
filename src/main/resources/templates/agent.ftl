@@ -73,7 +73,11 @@
                 }
                 vm.currentAgent = agent;
                 agent.active = true;
-                agent.hasNewMsg = false;
+                if (agent.hasNewMsg) {
+                    agent.hasNewMsg = false;
+                    $.post('/api/messages/offline/clear', function (data) {
+                    });
+                }
                 scrollHistoryToBottom();
             },
             sendMessage: function (message) {
@@ -124,8 +128,8 @@
 
                 socket.on('get_messages', function (data) {
                     var used;
-                    interval(function(){
-                        if(used) return;
+                    interval(function () {
+                        if (used) return;
                         var agents = vm.agents;
                         for (var i = 0; agents && i < agents.length; i++) {
                             var agent = agents[i];
@@ -190,15 +194,15 @@
             interval: 700
         });
     }
-    function interval(func, wait, times){
-        var interv = function(w, t){
-            return function(){
-                if(typeof t === "undefined" || t-- > 0){
+    function interval(func, wait, times) {
+        var interv = function (w, t) {
+            return function () {
+                if (typeof t === "undefined" || t-- > 0) {
                     setTimeout(interv, w);
-                    try{
+                    try {
                         func.call(null);
                     }
-                    catch(e){
+                    catch (e) {
                         t = 0;
                         throw e.toString();
                     }

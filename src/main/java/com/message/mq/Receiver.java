@@ -62,7 +62,6 @@ public class Receiver {
                         "get_messages",
                         cache.get(message.getUsername() + ":offline")
                 );
-                cache.remove(message.getUsername() + ":offline");
             }
         } else {
             cache.getGuests().put(message.getFingerPrint(), new Guest(

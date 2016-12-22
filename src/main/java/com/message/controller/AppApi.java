@@ -5,6 +5,7 @@ import com.message.model.Guest;
 import com.message.service.CacheService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
@@ -14,7 +15,7 @@ import java.util.*;
  */
 @RestController
 @RequestMapping("/api")
-public class AppApi {
+public class AppApi extends AbstractController {
     @Autowired
     private CacheService cache;
 
@@ -26,5 +27,16 @@ public class AppApi {
     @RequestMapping("/guests")
     public Collection<Guest> guests() {
         return cache.getGuests().values();
+    }
+
+    @RequestMapping("/messages/offline/get")
+    public Object getOfflineMessages() {
+        return cache.get(getCurrentUsername() + ":offline");
+    }
+
+    @RequestMapping(value = "/messages/offline/clear", method = RequestMethod.POST)
+    public String clearOfflineMessages() {
+        cache.remove(getCurrentUsername() + ":offline");
+        return "success";
     }
 }
