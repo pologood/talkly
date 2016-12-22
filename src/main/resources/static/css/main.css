@@ -122,6 +122,9 @@ body {
 .chat-container .people-list img {
     float: left;
 }
+.chat-container .people-list img.offline {
+    opacity: 0.5;
+}
 
 .chat-container .people-list .about {
     float: left;

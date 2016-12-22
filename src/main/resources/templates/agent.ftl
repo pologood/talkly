@@ -10,7 +10,8 @@
             <li class="clearfix" v-for="agent in filteredAgents"
                 v-on:click="selectAgent(agent)"
                 v-bind:class="{'active':agent==currentAgent}">
-                <img class="avatar" src="img/anon-avatar.jpg" alt="avatar"/>
+                <img class="avatar" src="img/anon-avatar.jpg" alt="avatar"
+                     v-bind:class="{offline:!agent.online}"/>
                 <div class="about">
                     <div class="name">{{agent.name}}
                         <i class="fa fa-circle text-danger blink" v-if="agent.hasNewMsg"></i>
@@ -172,6 +173,23 @@
             console.log(data);
             newExcitingAlerts("!!!您收到一条新消息!!!");
             scrollHistoryToBottom();
+        });
+        socket.on('update_agents', function (data) {
+            var onlineAgents = [];
+            var offlineAgents = [];
+            for (var i = 0; vm.agents && i < vm.agents.length; i++) {
+                var agent = vm.agents[i];
+                if (agent) {
+                    if (data.indexOf(agent.username) >= 0) {
+                        agent.online = true;
+                        onlineAgents.push(agent);
+                    } else {
+                        agent.online = false;
+                        offlineAgents.push(agent);
+                    }
+                }
+            }
+            vm.agents = onlineAgents.concat(offlineAgents);
         });
     });
     function scrollHistoryToBottom() {

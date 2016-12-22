@@ -55,7 +55,7 @@ public class Receiver {
             );
             server.getBroadcastOperations().sendEvent(
                     "update_agents",
-                    cache.getAgents().values()
+                    cache.getAgents().keySet()
             );
             if (cache.get(message.getUsername() + ":offline") != null) {
                 server.getClient(UUID.fromString(message.getClientId())).sendEvent(
@@ -83,11 +83,11 @@ public class Receiver {
             String username = cache.getClients().get(clientId);
             cache.getClients().remove(clientId);
             if (cache.getAgents().containsKey(username)) {
+                cache.getAgents().remove(username);
                 server.getBroadcastOperations().sendEvent(
                         "update_agents",
                         cache.getAgents().keySet()
                 );
-                cache.getAgents().remove(username);
             }
             if (cache.getGuests().containsKey(username)) {
                 cache.getGuests().remove(username);

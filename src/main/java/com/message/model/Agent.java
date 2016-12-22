@@ -14,10 +14,12 @@ public class Agent implements Serializable {
     private String clientId;
     private String username;
     private String name;
+    private Boolean online;
 
     public Agent(String username, String name, String clientId) {
         this.username = username;
         this.name = name;
         this.clientId = clientId;
+        this.online = true;
     }
 }

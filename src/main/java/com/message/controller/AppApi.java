@@ -3,6 +3,7 @@ package com.message.controller;
 import com.message.model.Agent;
 import com.message.model.Guest;
 import com.message.service.CacheService;
+import com.message.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,10 +19,12 @@ import java.util.*;
 public class AppApi extends AbstractController {
     @Autowired
     private CacheService cache;
+    @Autowired
+    private UserService userService;
 
     @RequestMapping("/agents")
     public Collection<Agent> agents() {
-        return cache.getAgents().values();
+        return userService.loadAgents();
     }
 
     @RequestMapping("/guests")
