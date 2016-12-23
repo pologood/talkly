@@ -40,6 +40,10 @@ public class ChatServerConfig {
                 Register.class,
                 new RegisterListener(server, cache, sender)
         );
+        server.addEventListener("send_test",
+                String.class,
+                new TestListener()
+        );
         server.addDisconnectListener(new DisconnectListener(server, cache, sender));
 
         server.start();
