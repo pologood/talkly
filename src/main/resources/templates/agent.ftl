@@ -136,11 +136,14 @@
                             var agent = agents[i];
                             if (agent) {
                                 agent.histories = agent.histories || [];
-                                if (data[0].from == agent.username) {
-                                    agent.histories = data;
-                                    if (agent != vm.currentAgent) {
-                                        agent.hasNewMsg = true;
-                                        used = 1;
+                                for (var j = 0; data && j < data.length; j++) {
+                                    var msg = data[j];
+                                    if (msg && msg.from == agent.username) {
+                                        agent.histories.push(msg);
+                                        if (agent != vm.currentAgent) {
+                                            agent.hasNewMsg = true;
+                                            used = 1;
+                                        }
                                     }
                                 }
                             }
