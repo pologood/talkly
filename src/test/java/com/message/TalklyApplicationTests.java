@@ -26,6 +26,7 @@ public class TalklyApplicationTests {
     public static AtomicLong connectionCount = new AtomicLong(5);
     public static Random r = new Random();
     public static IO.Options opts;
+    private static int aa = 5000;
 
     public static void createSocket(final int id) {
 
@@ -36,7 +37,7 @@ public class TalklyApplicationTests {
                 @Override
                 public void call(Object... args) {
 //                    successCount.incrementAndGet();
-                    for (int i = 0; i < 100; i++) {
+                    for (int i = 0; i < aa; i++) {
                         sck.emit("send_test", id * 1000 + i);
                     }
                 }
@@ -98,8 +99,9 @@ public class TalklyApplicationTests {
                 @Override
                 public void call(Object... objects) {
                     int s = Integer.parseInt(objects[0].toString());
-                    System.out.println("Ack! " + Math.ceil(s / 1000) + "--" + s % 1000);
-                    if (objects[0].toString().endsWith("99")) {
+//                    System.out.println("Ack! " + Math.ceil(s / 1000) + "--" + s % 1000);
+                    System.out.println("Ack! " + s);
+                    if (objects[0].toString().endsWith(String.valueOf(aa - 1))) {
                         successCount.incrementAndGet();
                         sck.close();
                     }
@@ -117,7 +119,7 @@ public class TalklyApplicationTests {
         opts = new IO.Options();
         opts.forceNew = true;
 
-        connectionCount.set(100);
+        connectionCount.set(1);
         counter.set(1);
         opts.transports = new String[]{WebSocket.NAME};
 
