@@ -25,8 +25,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                        "/",
                         "/home",
                         "/guest",
-                        "/chat/**",
-                        "/amaze/**",
+                        "/css/**",
+                        "/js/**",
+                        "/fonts/**",
                         "/arclist/**"
                 ).permitAll()
                 .anyRequest().authenticated()
