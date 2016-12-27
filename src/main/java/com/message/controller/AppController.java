@@ -28,18 +28,18 @@ public class AppController extends AbstractController {
     public String index(Model model) {
         List<Agent> users = new ArrayList<>();
         model.addAttribute("users", users);
-        return "index";
+        return "chat/index";
     }
 
     @RequestMapping("/guest")
     public String guest(Model model) {
-        return "guest";
+        return "chat/guest";
     }
 
     @RequestMapping("/agent")
     public String agent(Model model) {
         model.addAttribute("username", getCurrentUsername());
-        return "agent";
+        return "chat/agent";
     }
 
     @RequestMapping("/login")
@@ -47,6 +47,6 @@ public class AppController extends AbstractController {
             @RequestParam(name = "username", required = false) String username,
             @RequestParam(name = "password", required = false) String password
     ) {
-        return "login";
+        return "chat/login";
     }
 }
