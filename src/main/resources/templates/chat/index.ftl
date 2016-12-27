@@ -1,4 +1,4 @@
-<#include "/header.ftl">
+<#include "/chat/header.ftl">
 <h1>Hello World</h1>
 <ul>
 <#list users as u>
@@ -46,4 +46,4 @@
         });
     }
 </script>
-<#include "/footer.ftl">
+<#include "/chat/footer.ftl">

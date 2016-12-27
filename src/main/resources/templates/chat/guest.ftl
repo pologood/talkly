@@ -1,4 +1,4 @@
-<#include "/header.ftl">
+<#include "/chat/header.ftl">
 <h1>Hello Guest</h1>
 <input id="to" type="text">
 <input id="msg" type="text">
@@ -45,4 +45,4 @@
         });
     }
 </script>
-<#include "/footer.ftl">
+<#include "/chat/footer.ftl">

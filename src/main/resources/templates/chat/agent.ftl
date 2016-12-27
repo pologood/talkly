@@ -1,4 +1,4 @@
-<#include "/header.ftl">
+<#include "/chat/header.ftl">
 
 <div id="chatVM" class="chat-container">
     <div class="people-list" id="people-list">
@@ -10,7 +10,7 @@
             <li class="clearfix" v-for="agent in filteredAgents"
                 v-on:click="selectAgent(agent)"
                 v-bind:class="{'active':agent==currentAgent}">
-                <img class="avatar" src="img/anon-avatar.jpg" alt="avatar"
+                <img class="avatar" src="chat/img/anon-avatar.jpg" alt="avatar"
                      v-bind:class="{offline:!agent.online}"/>
                 <div class="about">
                     <div class="name">{{agent.name}}
@@ -235,4 +235,4 @@
         return interv;
     }
 </script>
-<#include "/footer.ftl">
+<#include "/chat/footer.ftl">

@@ -1,4 +1,4 @@
-<#include "/header.ftl">
+<#include "/chat/header.ftl">
 <div class="container">
     <form class="form-signin" action="login" method="post">
         <h2 class="form-signin-heading">请登录</h2>
@@ -20,4 +20,4 @@
     <#--密码:<input type="password" name="password">-->
     <#--<input type="submit" value="登录">-->
 <#--</form>-->
-<#include "/footer.ftl">
+<#include "/chat/footer.ftl">
