@@ -3,9 +3,8 @@ package com.message.service;
 import com.message.model.Agent;
 import com.message.model.Guest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
+import redis.clients.jedis.Jedis;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,20 +19,24 @@ public class CacheService {
     private Map<String, Guest> guests = new ConcurrentHashMap<>();
 
     @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+    private Jedis redisTemplate;
+    @Autowired
+    private SerializerService serializerService;
 
     public void put(String key, Object value) {
-        ValueOperations<String, Object> valueops = redisTemplate.opsForValue();
-        valueops.set(key, value);
+        redisTemplate.set(
+                serializerService.serialize(key),
+                serializerService.serialize(value)
+        );
     }
 
     public Object get(String key) {
-        ValueOperations<String, Object> valueops = redisTemplate.opsForValue();
-        return valueops.get(key);
+        byte[] result = redisTemplate.get(serializerService.serialize(key));
+        return result == null ? null : serializerService.deserialize(result);
     }
 
     public void remove(String key) {
-        redisTemplate.delete(key);
+        redisTemplate.del(serializerService.serialize(key));
     }
 
     public Map<String, String> getClients() {
