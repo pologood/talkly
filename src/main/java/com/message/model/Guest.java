@@ -11,11 +11,18 @@ import lombok.Setter;
 public class Guest {
     private String fingerPrint;
     private String name;
+    private String agentId;
     private String clientId;
 
-    public Guest(String fingerPrint, String name, String clientId) {
+    public Guest(
+            String fingerPrint,
+            String name,
+            String clientId,
+            String agentId
+    ) {
         this.fingerPrint = fingerPrint;
         this.name = name;
         this.clientId = clientId;
+        this.agentId = agentId;
     }
 }

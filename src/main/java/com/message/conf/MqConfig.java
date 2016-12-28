@@ -34,4 +34,9 @@ public class MqConfig {
     public Queue chatQueue() {
         return new Queue("talkly.chat");
     }
+
+    @Bean
+    public Queue fetchLuckyQueue() {
+        return new Queue("talkly.guest.fetchLucky");
+    }
 }

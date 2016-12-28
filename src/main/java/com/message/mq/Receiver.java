@@ -9,6 +9,7 @@ import com.message.model.Agent;
 import com.message.model.Guest;
 import com.message.repository.UserRepository;
 import com.message.service.CacheService;
+import com.message.service.QueueService;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -29,50 +29,40 @@ import java.util.UUID;
 public class Receiver {
     private final static Logger log = LogManager.getLogger(Receiver.class);
     @Autowired
-    private CacheService cache;
-    @Autowired
     @Qualifier("chatServer")
     private SocketIOServer server;
     @Autowired
     private UserRepository userRepo;
+    @Autowired
+    private CacheService cache;
+    @Autowired
+    private QueueService queueService;
 
     @RabbitListener(queues = "talkly.loginAgent")
     @RabbitHandler
     public void loginAgent(Register message) {
-        log.debug("Receiver : " + message.toString());
-        if (message.getUsername() != null) {
-            User user = userRepo.findByUsername(message.getUsername());
-            if (user == null) {
-                return;
-            }
-            cache.getAgents().put(message.getUsername(), new Agent(
-                    message.getUsername(),
-                    user.getName(),
-                    message.getClientId().toString()
-            ));
-            cache.getClients().put(
-                    message.getClientId().toString(),
-                    message.getUsername()
-            );
-            server.getBroadcastOperations().sendEvent(
-                    "update_agents",
-                    cache.getAgents().keySet()
-            );
-            if (cache.get(message.getUsername() + ":offline") != null) {
-                server.getClient(UUID.fromString(message.getClientId())).sendEvent(
-                        "get_messages",
-                        cache.get(message.getUsername() + ":offline")
-                );
-            }
-        } else {
-            cache.getGuests().put(message.getFingerPrint(), new Guest(
-                    message.getFingerPrint(),
-                    message.getFingerPrint(),
-                    message.getClientId()
-            ));
-            cache.getClients().put(
-                    message.getClientId().toString(),
-                    message.getFingerPrint()
+        log.debug("loginAgent : " + message.toString());
+        User user = userRepo.findByUsername(message.getUsername());
+        if (user == null) {
+            return;
+        }
+        cache.getAgents().put(message.getUsername(), new Agent(
+                message.getUsername(),
+                user.getName(),
+                message.getClientId().toString()
+        ));
+        cache.getClients().put(
+                message.getClientId().toString(),
+                message.getUsername()
+        );
+        server.getBroadcastOperations().sendEvent(
+                "update_agents",
+                cache.getAgents().keySet()
+        );
+        if (cache.get(message.getUsername() + ":offline") != null) {
+            server.getClient(UUID.fromString(message.getClientId())).sendEvent(
+                    "get_messages",
+                    cache.get(message.getUsername() + ":offline")
             );
         }
     }
@@ -80,12 +70,24 @@ public class Receiver {
     @RabbitListener(queues = "talkly.loginGuest")
     @RabbitHandler
     public void loginGuest(LoginGuest message) {
-        log.debug("Receiver : " + message.toString());
+        log.debug("loginGuest : " + message.toString());
+        queueService.push(message.getAgentId(), message.getFingerPrint());
+        cache.getGuests().put(message.getFingerPrint(), new Guest(
+                message.getFingerPrint(),
+                message.getFingerPrint(),
+                message.getClientId(),
+                message.getAgentId()
+        ));
+        cache.getClients().put(
+                message.getClientId().toString(),
+                message.getFingerPrint()
+        );
     }
 
     @RabbitListener(queues = "talkly.logout")
     @RabbitHandler
     public void logout(String clientId) {
+        log.debug("logout : " + clientId);
         if (cache.getClients().containsKey(clientId)) {
             String username = cache.getClients().get(clientId);
             cache.getClients().remove(clientId);
@@ -97,7 +99,9 @@ public class Receiver {
                 );
             }
             if (cache.getGuests().containsKey(username)) {
+                Guest guest = cache.getGuests().get(username);
                 cache.getGuests().remove(username);
+                queueService.remove(guest.getAgentId(), guest.getFingerPrint());
             }
         }
     }
@@ -105,6 +109,7 @@ public class Receiver {
     @RabbitListener(queues = "talkly.chat")
     @RabbitHandler
     public void chat(Message message) {
+        log.debug("chat : " + message.toString());
         String toClientId = null;
         if (cache.getAgents().containsKey(message.getTo())) {
             toClientId = cache.getAgents().get(message.getTo()).getClientId();
@@ -149,6 +154,18 @@ public class Receiver {
                     message.getCreateTime()
             ));
             cache.put(message.getTo() + ":offline", offlineMessages);
+        }
+    }
+
+    @RabbitListener(queues = "talkly.guest.fetchLucky")
+    @RabbitHandler
+    public void fetchLucky(LoginGuest message) {
+        log.debug("fetchLucky : " + message.toString());
+        Guest guest = cache.getGuests().get(message.getFingerPrint());
+        if (guest != null) {
+            server.getClient(UUID.fromString(guest.getClientId())).sendEvent(
+                    "update_guests"
+            );
         }
     }
 }

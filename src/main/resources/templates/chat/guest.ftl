@@ -1,28 +1,39 @@
 <#include "/chat/header.ftl">
 <h1>Hello Guest</h1>
-<input id="to" type="text">
-<input id="msg" type="text">
-<button type="button" onClick="sendMessage()" class="btn" id="send">Send</button>
-<button type="button" onClick="sendDisconnect()" class="btn">Disconnect</button>
-
-
-<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
-<script src="http://cdn.jsdelivr.net/fingerprintjs2/1.4.1/fingerprint2.min.js"></script>
+<div id="guestVM">
+    <div v-for="agent in agents">
+        <a href="javascript:void()"
+           v-on:click="selectAgent(agent)">{{agent.name}}</a>
+        <span>{{agent.online?'在线':'离线'}}</span>
+    </div>
+</div>
 <script>
-    function getURLParameter(name) {
-        return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
-    }
-    document.getElementById("to").value = getURLParameter('to');
+    var vm = new Vue({
+        el: '#guestVM',
+        data: {
+            agents: []
+        },
+        methods: {
+            init: function () {
+                $.get('/api/agents', function (data) {
+                    vm.agents = data;
+                })
+            },
+            selectAgent: function (agent) {
+                socket.emit('send_login', {
+                    fingerPrint: fingerprint,
+                    agentId: agent.username
+                });
+            }
+        }
+    });
+    vm.init();
     var socket = io.connect('http://localhost:9092');
     var fingerprint;
     new Fingerprint2().get(function (result, components) {
         fingerprint = result;
         socket.on('connect', function () {
             console.log('Client has connected to the server!');
-            socket.emit('send_register', {
-                fingerPrint: fingerprint,
-                token: "zzzzz"
-            });
         });
         socket.on('disconnect', function () {
             console.log('The client has disconnected!');
@@ -31,18 +42,22 @@
             console.log(data);
         });
         socket.on('update_agents', function (data) {
-            console.log(data);
+            var onlineAgents = [];
+            var offlineAgents = [];
+            for (var i = 0; vm.agents && i < vm.agents.length; i++) {
+                var agent = vm.agents[i];
+                if (agent) {
+                    if (data.indexOf(agent.username) >= 0) {
+                        agent.online = true;
+                        onlineAgents.push(agent);
+                    } else {
+                        agent.online = false;
+                        offlineAgents.push(agent);
+                    }
+                }
+            }
+            vm.agents = onlineAgents.concat(offlineAgents);
         });
     });
-    function sendDisconnect() {
-        socket.disconnect();
-    }
-    function sendMessage() {
-        socket.emit('send_message', {
-            from: fingerprint,
-            to: document.getElementById("to").value,
-            content: document.getElementById("listener").value
-        });
-    }
 </script>
 <#include "/chat/footer.ftl">

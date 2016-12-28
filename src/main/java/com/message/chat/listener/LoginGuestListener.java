@@ -25,8 +25,10 @@ public class LoginGuestListener
     @Override
     public void onData(
             SocketIOClient client,
-            LoginGuest loginGuest,
+            LoginGuest message,
             AckRequest ackRequest
     ) throws Exception {
+        message.setClientId(client.getSessionId().toString());
+        getSender().loginGuest(message);
     }
 }

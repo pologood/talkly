@@ -1,6 +1,6 @@
 package com.message.mq;
 
-import com.corundumstudio.socketio.SocketIOClient;
+import com.message.chat.listener.LoginGuest;
 import com.message.chat.listener.Message;
 import com.message.chat.listener.Register;
 import org.apache.log4j.LogManager;
@@ -24,11 +24,19 @@ public class Sender {
         rabbitTemplate.convertAndSend("talkly.loginAgent", register);
     }
 
+    public void loginGuest(LoginGuest message) {
+        rabbitTemplate.convertAndSend("talkly.loginGuest", message);
+    }
+
     public void logout(String clientId) {
         rabbitTemplate.convertAndSend("talkly.logout", clientId);
     }
 
     public void chat(Message message) {
         rabbitTemplate.convertAndSend("talkly.chat", message);
+    }
+
+    public void fetchLucky(LoginGuest guest) {
+        rabbitTemplate.convertAndSend("talkly.guest.fetchLucky", guest);
     }
 }
