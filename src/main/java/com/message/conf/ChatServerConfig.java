@@ -40,6 +40,10 @@ public class ChatServerConfig {
                 Register.class,
                 new RegisterListener(server, cache, sender)
         );
+        server.addEventListener("send_login",
+                LoginGuest.class,
+                new LoginGuestListener(server, cache, sender)
+        );
         server.addEventListener("send_test",
                 String.class,
                 new TestListener()

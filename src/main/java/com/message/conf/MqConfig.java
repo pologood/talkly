@@ -21,6 +21,11 @@ public class MqConfig {
     }
 
     @Bean
+    public Queue loginGuestQueue() {
+        return new Queue("talkly.loginGuest");
+    }
+
+    @Bean
     public Queue logoutQueue() {
         return new Queue("talkly.logout");
     }

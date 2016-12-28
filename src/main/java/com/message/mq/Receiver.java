@@ -1,6 +1,7 @@
 package com.message.mq;
 
 import com.corundumstudio.socketio.SocketIOServer;
+import com.message.chat.listener.LoginGuest;
 import com.message.chat.listener.Message;
 import com.message.chat.listener.Register;
 import com.message.domain.User;
@@ -74,6 +75,12 @@ public class Receiver {
                     message.getFingerPrint()
             );
         }
+    }
+
+    @RabbitListener(queues = "talkly.loginGuest")
+    @RabbitHandler
+    public void loginGuest(LoginGuest message) {
+        log.debug("Receiver : " + message.toString());
     }
 
     @RabbitListener(queues = "talkly.logout")
