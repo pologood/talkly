@@ -25,6 +25,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                        "/",
                         "/home",
                         "/guest",
+                        "/api/agents",
                         "/chat/**",
                         "/amaze/**",
                         "/arclist/**"
