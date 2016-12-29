@@ -31,14 +31,14 @@ public class AppApi extends AbstractController {
         return userService.loadAgents();
     }
 
-    @RequestMapping("/agent/guests/lucky/{:agentId}")
+    @RequestMapping("/agent/guests/lucky/{agentId}")
     public List<Guest> getLuckyGuests(
             @PathVariable("agentId") String agentId
     ) {
         return queueService.getLuckyGuests(agentId);
     }
 
-    @RequestMapping("/agent/guests/wait/{:agentId}")
+    @RequestMapping("/agent/guests/wait/{agentId}")
     public List<Guest> getWaitGuests(
             @PathVariable("agentId") String agentId
     ) {
