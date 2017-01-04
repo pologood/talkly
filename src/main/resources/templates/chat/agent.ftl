@@ -18,6 +18,16 @@
                     </div>
                 </div>
             </li>
+            <li class="clearfix" v-for="guest in guests"
+                v-on:click="selectAgent(guest)"
+                v-bind:class="{'active':guest==currentAgent}">
+                <img class="avatar" src="chat/img/anon-avatar.jpg" alt="avatar"/>
+                <div class="about">
+                    <div class="name">{{guest.name}}
+                        <i class="fa fa-circle text-danger blink" v-if="guest.hasNewMsg"></i>
+                    </div>
+                </div>
+            </li>
         </ul>
     </div>
     <div class="chat" v-if="currentAgent.username">
@@ -60,13 +70,15 @@
             message: '',
             fingerPrint: '',
             currentAgent: {},
-            agents: []
+            agents: [],
+            guests: []
         },
         methods: {
             init: function () {
                 $.get('/api/agents', function (data) {
                     vm.agents = data;
                 })
+                loadGuests();
             },
             selectAgent: function (agent) {
                 if (vm.currentAgent) {
@@ -194,7 +206,21 @@
             }
             vm.agents = onlineAgents.concat(offlineAgents);
         });
+        socket.on('update_guests', function (data) {
+            loadGuests();
+        });
     });
+    function loadGuests() {
+        $.get('/api/agent/guests/lucky/${username}', function (data) {
+            for (var i = 0; data && i < data.length; i++) {
+                var guest = data[i];
+                if (guest) {
+                    guest.name = '游客' + guest.name.substring(0, 4);
+                }
+            }
+            vm.guests = data;
+        })
+    }
     function scrollHistoryToBottom() {
         setTimeout(function () {
             var objDiv = document.getElementById("chat-history");

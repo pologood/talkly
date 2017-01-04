@@ -72,6 +72,8 @@ public class Receiver {
     public void loginGuest(LoginGuest message) {
         log.debug("loginGuest : " + message.toString());
         queueService.push(message.getAgentId(), message.getFingerPrint());
+        server.getClient(UUID.fromString(message.getClientId()))
+                .sendEvent("update_guests");
         cache.getGuests().put(message.getFingerPrint(), new Guest(
                 message.getFingerPrint(),
                 message.getFingerPrint(),
@@ -102,6 +104,8 @@ public class Receiver {
                 Guest guest = cache.getGuests().get(username);
                 cache.getGuests().remove(username);
                 queueService.remove(guest.getAgentId(), guest.getFingerPrint());
+                server.getClient(UUID.fromString(clientId))
+                        .sendEvent("update_guests");
             }
         }
     }

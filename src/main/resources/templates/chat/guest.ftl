@@ -6,11 +6,17 @@
            v-on:click="selectAgent(agent)">{{agent.name}}</a>
         <span>{{agent.online?'在线':'离线'}}</span>
     </div>
+    <div v-if="agent">
+        <textarea v-model="text"></textarea>
+        <button v-on:click>发送</button>
+    </div>
 </div>
 <script>
     var vm = new Vue({
         el: '#guestVM',
         data: {
+            text: "",
+            agent: null,
             agents: []
         },
         methods: {
@@ -24,6 +30,7 @@
                     fingerPrint: fingerprint,
                     agentId: agent.username
                 });
+                vm.agent = agent;
             }
         }
     });
